@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (user) {
-      console.log(user);
+      //console.log(user);
       db.collection("users").doc(user.uid).set(
         {
           email: user.email,
@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }) {
   if (loading) {
     return <Loader />;
   }
-  console.log(user);
+  // console.log(user);
   if (!user) {
     return <Login />;
   }

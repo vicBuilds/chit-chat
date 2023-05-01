@@ -1,5 +1,5 @@
 const getRecepientEmail = (users, userLoggedIn) => {
-  console.log("Users are", users);
+  return users[1];
 };
 
 export default getRecepientEmail;

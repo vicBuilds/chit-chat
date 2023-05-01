@@ -9,8 +9,21 @@ import { auth, db } from "../../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from "./Chat";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
-const Container = styled.div``;
+const Container = styled.div`
+  flex: 0.45;
+  border-right: 1px solid whitesmoke;
+  height: 100vh;
+  min-width: 300px;
+  max-width: 350px;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
 
 const Header = styled.div`
   display: flex;
@@ -33,10 +46,17 @@ const UserAvatar = styled(Avatar)`
 
 const IconsContainer = styled.div``;
 
+const LogoutIcon = styled(PowerSettingsNewIcon)`
+  &:hover {
+    color: red;
+  }
+`;
+
 const Search = styled.div`
   display: flex;
   align-items: center;
   padding: 20px;
+  background-color: white;
 `;
 const SearchInput = styled.input`
   border: none;
@@ -46,6 +66,7 @@ const SearchInput = styled.input`
 
 const SidebarButton = styled(Button)`
   width: 100%;
+  background-color: white;
   &&& {
     border-top: 1px solid whitesmoke;
     border-bottom: 1px solid whitesmoke;
@@ -54,6 +75,7 @@ const SidebarButton = styled(Button)`
 
 const Sidebar = () => {
   const [user] = useAuthState(auth);
+  console.log("Hello photo url", typeof user.photoURL);
   const userChatRef = db
     .collection("chats")
     .where("users", "array-contains", user.email);
@@ -85,26 +107,25 @@ const Sidebar = () => {
   return (
     <Container>
       <Header>
-        <UserAvatar
-          onClick={() => {
-            auth.signOut();
-          }}
-        />
+        <UserAvatar src={user.photoURL} />
         <IconsContainer>
           <IconButton>
-            <ChatIcon />
-            <MoreVertIcon />
+            {/* <ChatIcon /> */}
+            <LogoutIcon
+              onClick={() => {
+                auth.signOut();
+              }}
+            />
           </IconButton>
         </IconsContainer>
       </Header>
-
       <Search>
         <SearchOutlined />
         <SearchInput placeholder="Search in chats" />
       </Search>
       <SidebarButton onClick={createAChat}>START A NEW CHAT</SidebarButton>
       {chatSnapshot?.docs.map((chat) => {
-        return <Chat key={chat.id} id={chat.id} chat={chat.data()} />;
+        return <Chat key={chat.id} id={chat.id} users={chat.data().users} />;
       })}
     </Container>
   );
